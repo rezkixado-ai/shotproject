@@ -90,6 +90,8 @@ export type Section04NoPro = {
   titleHighlight: string;
   items: SimpleIconItem[];
   quote: string;
+  backgroundImage: string;
+  backgroundOpacity: number; // 0-1
 };
 
 export type DetailedItem = { id: string; icon: string; title: string; description: string };
@@ -261,7 +263,6 @@ export const DEFAULT_CONTENT: SiteContent = {
       { id: 'g2', image: '/assets/gallery-2.jpg' },
       { id: 'g3', image: '/assets/gallery-3.jpg' },
       { id: 'g4', image: '/assets/gallery-4.jpg' },
-      { id: 'g5', image: '/assets/gallery-5.jpg' },
     ],
     footnote: 'Dan semuanya akan dibuat dengan pendekatan ',
     footnoteBold: 'film pendek + mobile filmmaking.',
@@ -288,6 +289,8 @@ export const DEFAULT_CONTENT: SiteContent = {
       { id: 'i3', icon: 'clapperboard', text: 'Kalau lo belum pernah bikin film, justru nggak masalah.' },
     ],
     quote: 'Kita belajar sambil jalan. Karena project ini bukan tentang mencari orang paling jago. Tapi tentang menemukan orang-orang yang mau mencoba.',
+    backgroundImage: '',
+    backgroundOpacity: 0.35,
   },
   section05: {
     number: '05',

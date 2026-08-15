@@ -135,19 +135,27 @@ export default async function Home() {
 
       {/* ── 04 No Need To Be Pro ── */}
       <section id="proses" className={`${s.section} ${s.sectionDark}`}>
-        <span className={s.numBadgeLime}>{c.section04.number}</span>
-        <h2 className={s.h2Light}>
-          {c.section04.title} <span className={s.lime}>{c.section04.titleHighlight}</span>
-        </h2>
-        <div className={s.iconRow}>
-          {c.section04.items.map((it) => (
-            <div key={it.id} className={s.iconItem}>
-              <span className={s.iconItemWrap}><Icon name={it.icon} size={22} strokeWidth={1.6} /></span>
-              {it.text}
-            </div>
-          ))}
+        {c.section04.backgroundImage && (
+          <div
+            className={s.sectionBgImage}
+            style={{ backgroundImage: `url(${c.section04.backgroundImage})`, opacity: c.section04.backgroundOpacity }}
+          />
+        )}
+        <div className={s.sectionBgContent}>
+          <span className={s.numBadgeLime}>{c.section04.number}</span>
+          <h2 className={s.h2Light}>
+            {c.section04.title} <span className={s.lime}>{c.section04.titleHighlight}</span>
+          </h2>
+          <div className={s.iconRow}>
+            {c.section04.items.map((it) => (
+              <div key={it.id} className={s.iconItem}>
+                <span className={s.iconItemWrap}><Icon name={it.icon} size={22} strokeWidth={1.6} /></span>
+                {it.text}
+              </div>
+            ))}
+          </div>
+          <div className={s.quoteBox}>{c.section04.quote}</div>
         </div>
-        <div className={s.quoteBox}>{c.section04.quote}</div>
       </section>
 
       {/* ── 05 / 06 ── */}
@@ -189,7 +197,7 @@ export default async function Home() {
               <div className={s.offerGrid}>
                 {c.section06.offers.map((o) => (
                   <div key={o.id} className={s.offerItem}>
-                    <Icon name={o.icon} size={16} strokeWidth={1.6} />
+                    <span className={s.offerIconWrap}><Icon name={o.icon} size={14} strokeWidth={1.8} /></span>
                     {o.label}
                   </div>
                 ))}

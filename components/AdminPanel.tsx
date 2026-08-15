@@ -459,6 +459,25 @@ function Section04Editor({ data, onChange }: { data: Section04NoPro; onChange: (
         </div>
       </div>
       <div className={s.card}>
+        <div className={s.cardHead}><strong>Background Section (opsional)</strong></div>
+        <div className={s.fieldGrid}>
+          <label className={s.label} style={{ gridColumn: '1/-1' }}>
+            Path Gambar Background (kosongkan buat pakai background hitam polos)
+            <input className={s.input} value={data.backgroundImage} onChange={(e) => upd({ backgroundImage: e.target.value })} />
+          </label>
+          <label className={s.label}>
+            Opacity ({Math.round(data.backgroundOpacity * 100)}%)
+            <input type="range" min={0} max={1} step={0.05} value={data.backgroundOpacity} onChange={(e) => upd({ backgroundOpacity: +e.target.value })} />
+          </label>
+        </div>
+        <UploadField label="Upload Gambar Background" onUploaded={(url) => upd({ backgroundImage: url })} />
+        {data.backgroundImage && (
+          <button className={s.btnAddSm} type="button" onClick={() => upd({ backgroundImage: '' })} style={{ marginTop: 10 }}>
+            <UI.X size={13} /> Hapus Background
+          </button>
+        )}
+      </div>
+      <div className={s.card}>
         <div className={s.cardHead}><strong>3 Poin Icon</strong></div>
         {data.items.map((it, i) => (
           <div key={it.id} className={s.listRow}>
