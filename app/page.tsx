@@ -1,63 +1,60 @@
 import Link from 'next/link';
 import { readContent } from '@/lib/content';
+import { HeroSlider } from '@/components/HeroSlider';
+import { CollabConveyor } from '@/components/CollabConveyor';
+import { Icon } from '@/lib/icons';
 import s from './page.module.css';
 
-// Content lives in Vercel KV and can change any time from the admin panel,
+// Content lives in Redis and can change any time from the admin panel,
 // so render this on every request instead of baking it in at build time.
 export const dynamic = 'force-dynamic';
-
-const SOCIAL_ICON: Record<string, string> = {
-  youtube: '▶',
-  instagram: '◎',
-  tiktok: '♪',
-  email: '✉',
-};
 
 export default async function Home() {
   const c = await readContent();
 
   return (
     <main className={s.page}>
-      {/* ── Hero ── */}
+      {/* ── Hero (full-bleed slider) ── */}
       <section className={s.hero}>
-        <nav className={s.nav}>
-          <span className={s.brand}>{c.nav.brand}</span>
-          <div className={s.navLinks}>
-            {c.nav.links.map((l) => (
-              <a key={l.id} href={l.href}>{l.label}</a>
+        <HeroSlider slides={c.hero.slides} durationMs={c.hero.slideDurationMs} />
+
+        <div className={s.heroContent}>
+          <nav className={s.nav}>
+            <span className={s.brand}>{c.nav.brand}</span>
+            <div className={s.navLinks}>
+              {c.nav.links.map((l) => (
+                <a key={l.id} href={l.href}>{l.label}</a>
+              ))}
+            </div>
+            <div className={s.navRight}>
+              <Link href={c.hero.ctaHref} className={s.navCta}>{c.nav.ctaLabel}</Link>
+              <img src={c.nav.logoImage} alt={c.nav.brand} className={s.navLogo} />
+            </div>
+          </nav>
+
+          <div className={s.heroGrid}>
+            <div className={s.heroLeft}>
+              <h1 className={s.heroTitle}>
+                {c.hero.titleLine1}<br />
+                <span className={s.lime}>{c.hero.titleLine2Highlight}</span>
+              </h1>
+              <p className={s.heroSubtitle}>{c.hero.subtitle}</p>
+              <p className={s.heroP}>{c.hero.paragraph1}</p>
+              <p className={s.heroP}>{c.hero.paragraph2}</p>
+              <p className={s.heroHighlight}>{c.hero.highlightLine}</p>
+              <Link href={c.hero.ctaHref} className={s.btnLime}>
+                {c.hero.ctaLabel} <span>→</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className={s.socialRail}>
+            {c.hero.socials.map((soc) => (
+              <a key={soc.id} href={soc.url} target="_blank" rel="noopener noreferrer" aria-label={soc.platform}>
+                <Icon name={soc.platform} size={16} strokeWidth={1.8} />
+              </a>
             ))}
           </div>
-          <div className={s.navRight}>
-            <Link href={c.hero.ctaHref} className={s.navCta}>{c.nav.ctaLabel}</Link>
-            <img src={c.nav.logoImage} alt={c.nav.brand} className={s.navLogo} />
-          </div>
-        </nav>
-
-        <div className={s.heroGrid}>
-          <div className={s.heroLeft}>
-            <h1 className={s.heroTitle}>
-              {c.hero.titleLine1}<br />
-              <span className={s.lime}>{c.hero.titleLine2Highlight}</span>
-            </h1>
-            <p className={s.heroSubtitle}>{c.hero.subtitle}</p>
-            <p className={s.heroP}>{c.hero.paragraph1}</p>
-            <p className={s.heroP}>{c.hero.paragraph2}</p>
-            <p className={s.heroHighlight}>{c.hero.highlightLine}</p>
-            <Link href={c.hero.ctaHref} className={s.btnLime}>
-              {c.hero.ctaLabel} <span>→</span>
-            </Link>
-          </div>
-          <div className={s.heroRight}>
-            <img src={c.hero.image} alt="ShotProject" />
-          </div>
-        </div>
-
-        <div className={s.socialRail}>
-          {c.hero.socials.map((soc) => (
-            <a key={soc.id} href={soc.url} target="_blank" rel="noopener noreferrer" aria-label={soc.platform}>
-              {SOCIAL_ICON[soc.platform] ?? '•'}
-            </a>
-          ))}
         </div>
       </section>
 
@@ -96,7 +93,8 @@ export default async function Home() {
             <div className={s.checklistGrid}>
               {c.section02.checklist.map((item) => (
                 <div key={item.id} className={s.checkItem}>
-                  <span className={s.checkIcon}>✓</span> {item.text}
+                  <Icon name="check" size={16} className={s.checkIcon} />
+                  {item.text}
                 </div>
               ))}
             </div>
@@ -125,7 +123,7 @@ export default async function Home() {
           {c.section03.cards.map((card) => (
             <div key={card.id} className={s.benefitCard}>
               <div className={s.benefitTop}>
-                <span className={s.benefitIcon}>{card.icon}</span>
+                <span className={s.benefitIconWrap}><Icon name={card.icon} size={22} strokeWidth={1.6} /></span>
                 <span className={s.benefitNum}>{card.number}</span>
               </div>
               <h3>{card.title}</h3>
@@ -144,7 +142,8 @@ export default async function Home() {
         <div className={s.iconRow}>
           {c.section04.items.map((it) => (
             <div key={it.id} className={s.iconItem}>
-              <span>{it.icon}</span> {it.text}
+              <span className={s.iconItemWrap}><Icon name={it.icon} size={22} strokeWidth={1.6} /></span>
+              {it.text}
             </div>
           ))}
         </div>
@@ -162,7 +161,7 @@ export default async function Home() {
             <div className={s.detailList}>
               {c.section05.items.map((it) => (
                 <div key={it.id} className={s.detailItem}>
-                  <span className={s.detailIcon}>{it.icon}</span>
+                  <span className={s.detailIconWrap}><Icon name={it.icon} size={18} strokeWidth={1.6} /></span>
                   <p>{it.description}</p>
                 </div>
               ))}
@@ -180,7 +179,8 @@ export default async function Home() {
             <div className={s.promiseList}>
               {c.section06.promises.map((p) => (
                 <div key={p.id} className={s.promiseItem}>
-                  <span>✕</span> {p.text}
+                  <Icon name="x" size={16} className={s.promiseIcon} />
+                  {p.text}
                 </div>
               ))}
             </div>
@@ -189,7 +189,8 @@ export default async function Home() {
               <div className={s.offerGrid}>
                 {c.section06.offers.map((o) => (
                   <div key={o.id} className={s.offerItem}>
-                    <span>{o.icon}</span> {o.label}
+                    <Icon name={o.icon} size={16} strokeWidth={1.6} />
+                    {o.label}
                   </div>
                 ))}
               </div>
@@ -199,6 +200,16 @@ export default async function Home() {
             </p>
           </div>
         </div>
+      </section>
+
+      {/* ── Collab conveyor ── */}
+      <section className={`${s.section} ${s.sectionDark}`}>
+        <span className={s.numBadgeLime}><Icon name="handshake" size={18} strokeWidth={1.8} /></span>
+        <h2 className={s.h2Light}>
+          {c.collabs.title} <span className={s.lime}>{c.collabs.titleHighlight}</span>
+        </h2>
+        <p className={s.bodyLight} style={{ marginBottom: 40 }}>{c.collabs.subtitle}</p>
+        <CollabConveyor logos={c.collabs.logos} />
       </section>
 
       {/* ── 07 Closing ── */}
@@ -219,7 +230,9 @@ export default async function Home() {
         </div>
         <div className={s.featureRow}>
           {c.section07.features.map((f) => (
-            <span key={f.id} className={s.featureTag}>{f.icon} {f.label}</span>
+            <span key={f.id} className={s.featureTag}>
+              <Icon name={f.icon} size={15} strokeWidth={1.8} /> {f.label}
+            </span>
           ))}
         </div>
       </section>

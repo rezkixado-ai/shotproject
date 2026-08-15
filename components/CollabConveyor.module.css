@@ -1,0 +1,110 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.marquee {
+  overflow: hidden;
+  width: 100%;
+  mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  padding: 24px 0;
+}
+
+.track {
+  display: flex;
+  gap: 28px;
+  width: max-content;
+  animation: scroll 32s linear infinite;
+}
+
+.paused .track {
+  animation-play-state: paused;
+}
+
+.item {
+  flex-shrink: 0;
+  width: 168px;
+  height: 100px;
+  border-radius: 14px;
+  background: #17171a;
+  border: 1px solid var(--line-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 22px;
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.35s ease, opacity 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.item img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: grayscale(1) brightness(1.6);
+  transition: filter 0.35s ease;
+}
+
+.item:hover img {
+  filter: grayscale(0.3) brightness(1.2);
+}
+
+.itemDimmed {
+  filter: blur(3px) grayscale(0.4);
+  opacity: 0.35;
+  transform: scale(0.94);
+}
+
+.itemSelected {
+  transform: scale(1.16);
+  z-index: 5;
+  border-color: rgba(52, 255, 150, 0.7);
+  box-shadow: 0 0 0 1px rgba(52, 255, 150, 0.5), 0 0 46px 10px rgba(52, 255, 150, 0.35);
+  background: #1c221d;
+}
+
+.itemSelected img {
+  filter: grayscale(0) brightness(1);
+}
+
+.detail {
+  min-height: 92px;
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 20px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.detailShow {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.detail strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: rgba(52, 255, 150, 0.95);
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+
+.detail p {
+  color: var(--text-dim);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track { animation: none; }
+}

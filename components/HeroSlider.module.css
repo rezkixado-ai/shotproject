@@ -1,0 +1,68 @@
+.slider {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg-black);
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+}
+
+.slideIn {
+  z-index: 2;
+  animation: fadeIn 1.4s ease forwards;
+}
+
+.slideOut {
+  z-index: 1;
+  animation: fadeOut 1.4s ease forwards;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background-size: cover;
+  background-position: center;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.kenburns {
+  animation-name: kenburns;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.gradient {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background:
+    linear-gradient(180deg, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.35) 30%, rgba(10,10,10,0.65) 78%, rgba(10,10,10,0.92) 100%),
+    linear-gradient(90deg, rgba(10,10,10,0.75) 0%, rgba(10,10,10,0.25) 45%, rgba(10,10,10,0.05) 70%);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes kenburns {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.14) translate(-2%, -1.5%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kenburns { animation: none; }
+  .slideIn, .slideOut { animation-duration: 0.2s; }
+}

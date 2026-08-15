@@ -3,11 +3,10 @@ import { Redis } from '@upstash/redis';
 const CONTENT_KEY = 'shotproject:content';
 const SUBMISSIONS_KEY = 'shotproject:submissions';
 
-// Vercel KV (the old standalone product) is sunset — Redis on Vercel now
-// goes through a Marketplace integration (e.g. Upstash Redis), which injects
-// either KV_REST_API_URL/KV_REST_API_TOKEN or UPSTASH_REDIS_REST_URL/
-// UPSTASH_REDIS_REST_TOKEN depending on how it was installed. We check both
-// so this works regardless of which naming your integration used.
+// Redis on Vercel now goes through a Marketplace integration (e.g. Upstash
+// Redis), which injects either KV_REST_API_URL/KV_REST_API_TOKEN or
+// UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN depending on how it was
+// installed. We check both so this works regardless of naming.
 let _redis: Redis | null = null;
 function getRedis(): Redis {
   if (_redis) return _redis;
@@ -35,6 +34,8 @@ export type Nav = {
 
 export type SocialLink = { id: string; platform: string; url: string };
 
+export type HeroSlide = { id: string; type: 'image' | 'video'; src: string };
+
 export type Hero = {
   titleLine1: string;
   titleLine2Highlight: string;
@@ -44,7 +45,8 @@ export type Hero = {
   highlightLine: string;
   ctaLabel: string;
   ctaHref: string;
-  image: string;
+  slides: HeroSlide[];
+  slideDurationMs: number; // how long each slide shows before crossfading to the next
   socials: SocialLink[];
 };
 
@@ -127,12 +129,29 @@ export type Section07Closing = {
   features: FeatureTag[];
 };
 
+export type CollabLogo = { id: string; name: string; image: string; description: string };
+
+export type CollabSection = {
+  title: string;
+  titleHighlight: string;
+  subtitle: string;
+  logos: CollabLogo[];
+};
+
 export type FormBenefit = { id: string; icon: string; title: string; description: string };
 
+export type FormBgType = 'image' | 'video' | 'slideshow';
+
 export type FormPage = {
-  backgroundImage: string;
-  backgroundOverlayOpacity: number; // 0-1, darkens the bg image for readability
-  backgroundColor: string; // fallback / tint color behind the image
+  backgroundType: FormBgType;
+  backgroundImage: string; // used when backgroundType === 'image'
+  backgroundVideo: string; // used when backgroundType === 'video'
+  backgroundSlideshow: { id: string; image: string }[]; // used when backgroundType === 'slideshow'
+  slideDurationMs: number;
+  backgroundOverlayOpacity: number; // 0-1, darkens the bg for readability
+  backgroundColor: string; // fallback / tint color behind the media
+  glassOpacity: number; // 0-1, opacity of the glassmorphism form card background
+  glassBlur: number; // px, backdrop blur amount on the form card
   titleLine1: string;
   titleLine2Highlight: string;
   subtitleLines: string[];
@@ -155,6 +174,7 @@ export type SiteContent = {
   section05: Section05WhatYouGet;
   section06: Section06NoPromises;
   section07: Section07Closing;
+  collabs: CollabSection;
   formPage: FormPage;
 };
 
@@ -193,7 +213,12 @@ export const DEFAULT_CONTENT: SiteContent = {
     highlightLine: 'Kami cuma mencari orang yang mau berkarya, belajar, dan seru-seruan bareng.',
     ctaLabel: 'GABUNG SEKARANG',
     ctaHref: '/join',
-    image: '/assets/hero.jpg',
+    slides: [
+      { id: 'hs1', type: 'image', src: '/assets/hero.jpg' },
+      { id: 'hs2', type: 'image', src: '/assets/section01.jpg' },
+      { id: 'hs3', type: 'image', src: '/assets/section07.jpg' },
+    ],
+    slideDurationMs: 6000,
     socials: [
       { id: 'sy', platform: 'youtube', url: 'https://youtube.com' },
       { id: 'si', platform: 'instagram', url: 'https://instagram.com' },
@@ -247,10 +272,10 @@ export const DEFAULT_CONTENT: SiteContent = {
     titleHighlight: 'LO DAPAT?',
     subtitle: 'Bukan janji akan terkenal. Bukan janji akan dapat uang. Tapi ada beberapa hal yang mungkin jauh lebih berharga.',
     cards: [
-      { id: 'b1', icon: '🙂', number: '01', title: 'BELAJAR MICRO ACTING', description: 'Lo akan belajar bagaimana menyampaikan emosi bukan hanya lewat dialog. Tatapan. Gerakan kecil. Diam. Ekspresi. Cara duduk. Cara berjalan. Hal-hal kecil yang bikin sebuah karakter terasa hidup.' },
-      { id: 'b2', icon: '📷', number: '02', title: 'BELAJAR MOBILE VIDEO SHOT', description: 'Kita akan eksplor bagaimana membuat footage yang menarik hanya dengan perangkat yang kita punya. Composition. Camera movement. Framing. Shot size. Angle. Dan bagaimana membuat sebuah adegan terasa seperti film.' },
-      { id: 'b3', icon: '👁️', number: '03', title: 'BELAJAR MEMBACA EKSPRESI', description: 'Kadang karakter nggak perlu banyak bicara. Satu ekspresi bisa mengatakan lebih banyak daripada satu paragraf dialog. Di sini lo akan belajar mengontrol ekspresi dan gesture secara natural di depan kamera.' },
-      { id: 'b4', icon: '👥', number: '04', title: 'PUNYA PENGALAMAN BERKARYA', description: 'Daripada cuma bilang: "Gua pengen bikin sesuatu, suatu hari nanti." Mending suatu hari itu kita mulai sekarang.' },
+      { id: 'b1', icon: 'smile', number: '01', title: 'BELAJAR MICRO ACTING', description: 'Lo akan belajar bagaimana menyampaikan emosi bukan hanya lewat dialog. Tatapan. Gerakan kecil. Diam. Ekspresi. Cara duduk. Cara berjalan. Hal-hal kecil yang bikin sebuah karakter terasa hidup.' },
+      { id: 'b2', icon: 'camera', number: '02', title: 'BELAJAR MOBILE VIDEO SHOT', description: 'Kita akan eksplor bagaimana membuat footage yang menarik hanya dengan perangkat yang kita punya. Composition. Camera movement. Framing. Shot size. Angle. Dan bagaimana membuat sebuah adegan terasa seperti film.' },
+      { id: 'b3', icon: 'eye', number: '03', title: 'BELAJAR MEMBACA EKSPRESI', description: 'Kadang karakter nggak perlu banyak bicara. Satu ekspresi bisa mengatakan lebih banyak daripada satu paragraf dialog. Di sini lo akan belajar mengontrol ekspresi dan gesture secara natural di depan kamera.' },
+      { id: 'b4', icon: 'users', number: '04', title: 'PUNYA PENGALAMAN BERKARYA', description: 'Daripada cuma bilang: "Gua pengen bikin sesuatu, suatu hari nanti." Mending suatu hari itu kita mulai sekarang.' },
     ],
   },
   section04: {
@@ -258,9 +283,9 @@ export const DEFAULT_CONTENT: SiteContent = {
     title: 'LO NGGAK HARUS',
     titleHighlight: 'JAGO.',
     items: [
-      { id: 'i1', icon: '🎭', text: 'Kalau lo belum pernah acting, nggak masalah.' },
-      { id: 'i2', icon: '📷', text: 'Kalau lo belum pernah pegang kamera, nggak masalah.' },
-      { id: 'i3', icon: '🎬', text: 'Kalau lo belum pernah bikin film, justru nggak masalah.' },
+      { id: 'i1', icon: 'drama', text: 'Kalau lo belum pernah acting, nggak masalah.' },
+      { id: 'i2', icon: 'camera', text: 'Kalau lo belum pernah pegang kamera, nggak masalah.' },
+      { id: 'i3', icon: 'clapperboard', text: 'Kalau lo belum pernah bikin film, justru nggak masalah.' },
     ],
     quote: 'Kita belajar sambil jalan. Karena project ini bukan tentang mencari orang paling jago. Tapi tentang menemukan orang-orang yang mau mencoba.',
   },
@@ -269,9 +294,9 @@ export const DEFAULT_CONTENT: SiteContent = {
     title: 'DAN YANG PALING',
     titleHighlight: 'PENTING...',
     items: [
-      { id: 'd1', icon: '👥', title: 'Membawa pengalaman', description: 'Lo mungkin akan pulang bukan cuma membawa footage. Tapi membawa pengalaman.' },
-      { id: 'd2', icon: '👥', title: 'Ketemu orang baru', description: 'Punya cerita baru. Punya sesuatu yang pernah lo buat.' },
-      { id: 'd3', icon: '⭐', title: 'Teman baru', description: 'Dan mungkin... punya teman baru yang sama-sama suka bikin sesuatu.' },
+      { id: 'd1', icon: 'users', title: 'Membawa pengalaman', description: 'Lo mungkin akan pulang bukan cuma membawa footage. Tapi membawa pengalaman.' },
+      { id: 'd2', icon: 'users', title: 'Ketemu orang baru', description: 'Punya cerita baru. Punya sesuatu yang pernah lo buat.' },
+      { id: 'd3', icon: 'star', title: 'Teman baru', description: 'Dan mungkin... punya teman baru yang sama-sama suka bikin sesuatu.' },
     ],
     noteText: 'Untuk urusan konsumsi selama proses shooting, ',
     noteBold: 'kami yang tanggung. Karena kalau kita mau bikin sesuatu bareng-bareng, setidaknya kita bikin prosesnya tetap nyaman dan menyenangkan.',
@@ -288,10 +313,10 @@ export const DEFAULT_CONTENT: SiteContent = {
     ],
     offerIntro: 'Yang bisa kami tawarkan cuma:',
     offers: [
-      { id: 'o1', icon: '🛟', label: 'ruang untuk mencoba' },
-      { id: 'o2', icon: '📗', label: 'ruang untuk belajar' },
-      { id: 'o3', icon: '🤝', label: 'ruang untuk berkarya' },
-      { id: 'o4', icon: '🎟️', label: 'kesempatan untuk membuat sesuatu bersama' },
+      { id: 'o1', icon: 'life-buoy', label: 'ruang untuk mencoba' },
+      { id: 'o2', icon: 'book-open', label: 'ruang untuk belajar' },
+      { id: 'o3', icon: 'handshake', label: 'ruang untuk berkarya' },
+      { id: 'o4', icon: 'ticket', label: 'kesempatan untuk membuat sesuatu bersama' },
     ],
     closingText: 'Sisanya? Kita lihat sejauh mana kita bisa ',
     closingBold: 'jalan bareng.',
@@ -305,16 +330,38 @@ export const DEFAULT_CONTENT: SiteContent = {
     ctaHref: '/join',
     image: '/assets/section07.jpg',
     features: [
-      { id: 'f1', icon: '👑', label: 'Proses seru dan fun' },
-      { id: 'f2', icon: '👥', label: 'Belajar bareng dari awal' },
-      { id: 'f3', icon: '💬', label: 'Teman baru, cerita baru' },
-      { id: 'f4', icon: '🎬', label: 'Create something together' },
+      { id: 'f1', icon: 'crown', label: 'Proses seru dan fun' },
+      { id: 'f2', icon: 'users', label: 'Belajar bareng dari awal' },
+      { id: 'f3', icon: 'message', label: 'Teman baru, cerita baru' },
+      { id: 'f4', icon: 'clapperboard', label: 'Create something together' },
+    ],
+  },
+  collabs: {
+    title: 'PERNAH',
+    titleHighlight: 'BERKOLABORASI',
+    subtitle: 'Beberapa brand, kreator, dan komunitas yang pernah jalan bareng ShotProject. Klik salah satu buat lihat ceritanya.',
+    logos: [
+      { id: 'cl1', name: 'Kolaborator 1', image: '/assets/collab-1.png', description: 'Ganti nama & logo lewat admin panel.' },
+      { id: 'cl2', name: 'Kolaborator 2', image: '/assets/collab-2.png', description: 'Ganti nama & logo lewat admin panel.' },
+      { id: 'cl3', name: 'Kolaborator 3', image: '/assets/collab-3.png', description: 'Ganti nama & logo lewat admin panel.' },
+      { id: 'cl4', name: 'Kolaborator 4', image: '/assets/collab-4.png', description: 'Ganti nama & logo lewat admin panel.' },
+      { id: 'cl5', name: 'Kolaborator 5', image: '/assets/collab-5.png', description: 'Ganti nama & logo lewat admin panel.' },
+      { id: 'cl6', name: 'Kolaborator 6', image: '/assets/collab-6.png', description: 'Ganti nama & logo lewat admin panel.' },
     ],
   },
   formPage: {
+    backgroundType: 'image',
     backgroundImage: '/assets/form-bg.jpg',
+    backgroundVideo: '',
+    backgroundSlideshow: [
+      { id: 'fs1', image: '/assets/form-bg.jpg' },
+      { id: 'fs2', image: '/assets/hero.jpg' },
+    ],
+    slideDurationMs: 7000,
     backgroundOverlayOpacity: 0.55,
     backgroundColor: '#0a0a0a',
+    glassOpacity: 0.88,
+    glassBlur: 6,
     titleLine1: 'OKE.',
     titleLine2Highlight: 'KENALAN DULU.',
     subtitleLines: [
@@ -323,18 +370,18 @@ export const DEFAULT_CONTENT: SiteContent = {
       'Nggak perlu pengalaman acting.',
     ],
     benefits: [
-      { id: 'fb1', icon: '👥', title: 'BERKARYA BARENG', description: 'Bikin cerita sederhana tentang kehidupan sehari-hari.' },
-      { id: 'fb2', icon: '🎬', title: 'BELAJAR PRAKTIS', description: 'Micro acting, mobile video shot, dan ekspresi.' },
-      { id: 'fb3', icon: '🙂', title: 'PROSES YANG SERU', description: 'Belajar sambil jalan, ketawa bareng, dan bikin kenangan baru.' },
-      { id: 'fb4', icon: '☕', title: 'KONSUMSI KAMI TANGGUNG', description: 'Biar lo bisa fokus berkarya dan menikmati prosesnya.' },
+      { id: 'fb1', icon: 'users', title: 'BERKARYA BARENG', description: 'Bikin cerita sederhana tentang kehidupan sehari-hari.' },
+      { id: 'fb2', icon: 'clapperboard', title: 'BELAJAR PRAKTIS', description: 'Micro acting, mobile video shot, dan ekspresi.' },
+      { id: 'fb3', icon: 'smile', title: 'PROSES YANG SERU', description: 'Belajar sambil jalan, ketawa bareng, dan bikin kenangan baru.' },
+      { id: 'fb4', icon: 'coffee', title: 'KONSUMSI KAMI TANGGUNG', description: 'Biar lo bisa fokus berkarya dan menikmati prosesnya.' },
     ],
     formTitle: 'Kami cuma ingin tahu sedikit tentang lo.',
     submitLabel: 'GABUNG',
     noteTitle: 'CATATAN KECIL',
     notes: [
-      { id: 'nt1', icon: '👥', text: 'Project ini dibuat untuk belajar dan berkarya bersama.' },
-      { id: 'nt2', icon: '🛡️', text: 'Tidak ada jaminan bayaran, popularitas, atau kesempatan tertentu setelah mengikuti project.' },
-      { id: 'nt3', icon: '☕', text: 'Tapi selama proses shooting, konsumsi akan kami tanggung.' },
+      { id: 'nt1', icon: 'users', text: 'Project ini dibuat untuk belajar dan berkarya bersama.' },
+      { id: 'nt2', icon: 'shield', text: 'Tidak ada jaminan bayaran, popularitas, atau kesempatan tertentu setelah mengikuti project.' },
+      { id: 'nt3', icon: 'coffee', text: 'Tapi selama proses shooting, konsumsi akan kami tanggung.' },
     ],
     closingLabel: 'YANG PENTING:',
     closingHighlight: 'datang, belajar, bikin sesuatu, dan have fun!',
@@ -342,9 +389,6 @@ export const DEFAULT_CONTENT: SiteContent = {
 };
 
 // ─── Storage helpers (Redis via Vercel Marketplace) ──────
-//
-// Locally, run `vercel env pull .env.development.local` after linking the
-// project so this has credentials to talk to Redis.
 
 export async function readContent(): Promise<SiteContent> {
   const redis = getRedis();
@@ -353,8 +397,15 @@ export async function readContent(): Promise<SiteContent> {
     await redis.set(CONTENT_KEY, DEFAULT_CONTENT);
     return DEFAULT_CONTENT;
   }
-  // Merge with defaults so newly-added fields don't break older saved content.
-  return { ...DEFAULT_CONTENT, ...stored };
+  // Deep-ish merge with defaults so newly-added fields don't break older saved content.
+  return {
+    ...DEFAULT_CONTENT,
+    ...stored,
+    nav: { ...DEFAULT_CONTENT.nav, ...stored.nav },
+    hero: { ...DEFAULT_CONTENT.hero, ...stored.hero },
+    collabs: { ...DEFAULT_CONTENT.collabs, ...stored.collabs },
+    formPage: { ...DEFAULT_CONTENT.formPage, ...stored.formPage },
+  };
 }
 
 export async function writeContent(content: SiteContent): Promise<void> {

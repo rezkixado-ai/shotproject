@@ -1,10 +1,20 @@
 .page { overflow-x: hidden; }
 
-/* ── Hero ── */
+/* ── Hero (full-bleed slider) ── */
 .hero {
-  background: var(--bg-black);
-  padding: 28px 5vw 40px;
   position: relative;
+  min-height: 92vh;
+  overflow: hidden;
+  background: var(--bg-black);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 4;
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 5vw 60px;
 }
 
 .nav {
@@ -54,17 +64,16 @@
 }
 
 .heroGrid {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 48px;
+  flex: 1;
+  display: flex;
   align-items: center;
 }
 
-.heroLeft { max-width: 620px; }
+.heroLeft { max-width: 640px; }
 
 .heroTitle {
   font-family: var(--font-display);
-  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-size: clamp(2.6rem, 5.5vw, 4.4rem);
   line-height: 1.02;
   margin: 0 0 20px;
   letter-spacing: -0.01em;
@@ -74,23 +83,25 @@
 .limeDark { color: #8fae00; }
 
 .heroSubtitle {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   color: var(--text-white);
   margin: 0 0 20px;
 }
 
 .heroP {
-  color: var(--text-dim);
-  font-size: 0.95rem;
+  color: rgba(245,245,242,0.82);
+  font-size: 0.97rem;
   line-height: 1.6;
   margin: 0 0 10px;
+  max-width: 540px;
 }
 
 .heroHighlight {
   color: var(--lime);
-  font-size: 0.95rem;
+  font-size: 0.97rem;
   font-weight: 600;
   margin: 14px 0 28px;
+  max-width: 540px;
 }
 
 .btnLime {
@@ -107,30 +118,22 @@
 }
 .btnLime:hover { transform: translateY(-2px); }
 
-.heroRight {
-  border-radius: 16px;
-  overflow: hidden;
-  aspect-ratio: 4/3;
-  background: var(--bg-panel);
-  border: 1px solid var(--line-dark);
-}
-.heroRight img { width: 100%; height: 100%; object-fit: cover; }
-
 .socialRail {
   position: absolute;
   right: 5vw;
-  top: 130px;
+  bottom: 40px;
   display: flex;
-  flex-direction: column;
   gap: 14px;
 }
 .socialRail a {
-  width: 36px; height: 36px;
-  border: 1px solid var(--line-dark);
+  width: 38px; height: 38px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(10,10,10,0.35);
+  backdrop-filter: blur(6px);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem;
   color: var(--text-dim);
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 .socialRail a:hover { border-color: var(--lime); color: var(--lime); }
 
@@ -197,7 +200,7 @@
   margin-bottom: 24px;
 }
 .checkItem { display: flex; gap: 8px; font-size: 0.9rem; color: var(--text-white); align-items: flex-start; }
-.checkIcon { color: var(--lime); flex-shrink: 0; }
+.checkIcon { color: var(--lime); flex-shrink: 0; margin-top: 2px; }
 .footnote { color: var(--text-dim); font-size: 0.85rem; }
 .footnote b { color: var(--lime); font-weight: 700; }
 .galleryGrid {
@@ -223,15 +226,28 @@
   padding: 24px 20px;
 }
 .benefitTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.benefitIcon { font-size: 1.6rem; }
+.benefitIconWrap {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  background: var(--lime-dim);
+  color: #6a8500;
+  display: flex; align-items: center; justify-content: center;
+}
 .benefitNum { font-family: var(--font-mono); font-size: 0.75rem; color: #b6b6ae; }
 .benefitCard h3 { font-family: var(--font-display); font-size: 0.85rem; margin: 0 0 10px; letter-spacing: 0.01em; }
 .benefitCard p { font-size: 0.82rem; color: var(--text-black-dim); line-height: 1.55; margin: 0; }
 
 /* ── 04 ── */
 .iconRow { display: flex; gap: 32px; flex-wrap: wrap; margin: 24px 0 28px; }
-.iconItem { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; color: var(--text-white); max-width: 220px; }
-.iconItem span { font-size: 1.3rem; }
+.iconItem { display: flex; align-items: center; gap: 12px; font-size: 0.92rem; color: var(--text-white); max-width: 220px; }
+.iconItemWrap {
+  width: 40px; height: 40px; flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--bg-panel);
+  border: 1px solid var(--line-dark);
+  color: var(--lime);
+  display: flex; align-items: center; justify-content: center;
+}
 .quoteBox {
   border: 1px solid var(--line-dark);
   border-radius: 12px;
@@ -246,7 +262,15 @@
 .twoColGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
 .detailList { display: flex; flex-direction: column; gap: 18px; margin: 22px 0; }
 .detailItem { display: flex; gap: 14px; align-items: flex-start; }
-.detailIcon { font-size: 1.3rem; }
+.detailIconWrap {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--bg-light);
+  border: 1px solid var(--line-light);
+  color: var(--text-black-dim);
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+}
 .detailItem p { margin: 0; color: var(--text-black-dim); font-size: 0.9rem; line-height: 1.55; }
 .noteBox {
   background: #fff;
@@ -259,8 +283,8 @@
 }
 .noteBox b { color: var(--text-black); }
 .promiseList { display: flex; flex-direction: column; gap: 12px; margin: 22px 0; }
-.promiseItem { display: flex; gap: 10px; font-size: 0.9rem; color: var(--text-black-dim); }
-.promiseItem span { color: #c14c4c; }
+.promiseItem { display: flex; gap: 10px; align-items: center; font-size: 0.9rem; color: var(--text-black-dim); }
+.promiseIcon { color: #c14c4c; flex-shrink: 0; }
 .offerBox {
   background: #fff;
   border: 1px solid var(--line-light);
@@ -271,6 +295,7 @@
 .offerBox > p { margin: 0 0 12px; font-size: 0.85rem; color: var(--text-black-dim); }
 .offerGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .offerItem { display: flex; gap: 8px; align-items: center; font-size: 0.82rem; color: var(--text-black-dim); }
+.offerItem svg { flex-shrink: 0; color: #8fae00; }
 
 /* ── 07 ── */
 .sectionClosing { padding-bottom: 56px; }
@@ -289,7 +314,11 @@
   padding: 8px 16px;
   font-size: 0.8rem;
   color: var(--text-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
+.featureTag svg { color: var(--lime); flex-shrink: 0; }
 
 /* ── Footer ── */
 .footer {
@@ -314,11 +343,12 @@
 
 /* ── Responsive ── */
 @media (max-width: 900px) {
-  .heroGrid, .sec01Grid, .sec02Grid, .twoColGrid, .closingGrid { grid-template-columns: 1fr; }
+  .sec01Grid, .sec02Grid, .twoColGrid, .closingGrid { grid-template-columns: 1fr; }
   .cardGrid { grid-template-columns: 1fr 1fr; }
   .checklistGrid { grid-template-columns: 1fr; }
   .socialRail { display: none; }
   .navLinks { display: none; }
+  .hero, .heroContent { min-height: 78vh; }
 }
 @media (max-width: 560px) {
   .cardGrid { grid-template-columns: 1fr; }

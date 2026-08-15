@@ -91,8 +91,17 @@ Usia pada halaman `/join`, dan datanya ikut kesimpen di tab **Pendaftar** admin 
 
 | Tab | Isi |
 |---|---|
-| Hero | Judul, subjudul, CTA, gambar hero, social media links |
-| 01–07 | Semua teks & gambar tiap section landing page |
-| Halaman Form | Background (gambar + overlay + warna), judul, 4 poin manfaat, catatan kecil |
+| Hero | Slide background (gambar/video, bisa dicampur, ada Ken Burns + crossfade), judul, subjudul, CTA, social media links |
+| 01–07 | Semua teks & gambar tiap section landing page, semua icon lewat picker (bukan emoji) |
+| Kolaborasi | Logo conveyor infinite-loop — nama, logo, deskripsi tiap kolaborator |
+| Halaman Form | Tipe background (gambar/video/slideshow), overlay, opacity & blur kaca (glassmorphism), judul, 4 poin manfaat, catatan kecil |
 | Pendaftar | List orang yang udah isi form (otomatis muncul begitu ada yang submit) |
-| Nav & Sosial | Menu navbar |
+| Nav & Sosial | Logo, menu navbar |
+
+## Fitur front-end
+
+- **Hero slider**: full-bleed background yang bisa gonta-ganti gambar/video, transisi crossfade 1.4 detik (nggak ada jump cut) + efek Ken Burns (zoom perlahan) yang restart bersih tiap slide berganti.
+- **Conveyor kolaborasi**: logo berjalan infinite-loop otomatis. Klik satu logo → dia scale up + glow hijau + muncul deskripsi, logo lain otomatis blur.
+- **Icon modern**: semua icon di seluruh site (termasuk admin panel) pakai [Lucide](https://lucide.dev), bukan emoji. Field `icon` di konten nyimpen key (`"camera"`, `"users"`, dst), dipilih lewat dropdown icon picker di admin — bukan input teks bebas.
+- **Background form fleksibel**: halaman `/join` bisa pakai gambar statis, video, atau slideshow gambar (pakai komponen slider yang sama dengan hero). Kartu form di atasnya pakai efek glassmorphism yang opacity & blur-nya bisa diatur dari admin (tab Halaman Form).
+
