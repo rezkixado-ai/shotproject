@@ -158,56 +158,53 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── 05 / 06 ── */}
-      <section className={`${s.section} ${s.sectionLight}`}>
-        <div className={s.twoColGrid}>
-          <div>
-            <span className={s.numBadge}>{c.section05.number}</span>
-            <h2 className={s.h2Dark}>
-              {c.section05.title} <span className={s.limeDark}>{c.section05.titleHighlight}</span>
-            </h2>
-            <div className={s.detailList}>
-              {c.section05.items.map((it) => (
-                <div key={it.id} className={s.detailItem}>
-                  <span className={s.detailIconWrap}><Icon name={it.icon} size={18} strokeWidth={1.6} /></span>
-                  <p>{it.description}</p>
-                </div>
-              ))}
+      {/* ── 05 ── */}
+      <section className={`${s.section} ${s.sectionGreen}`}>
+        <span className={s.numBadge}>{c.section05.number}</span>
+        <h2 className={s.h2Dark}>
+          {c.section05.title} <span className={s.highlightOnGreen}>{c.section05.titleHighlight}</span>
+        </h2>
+        <div className={s.detailList}>
+          {c.section05.items.map((it) => (
+            <div key={it.id} className={s.detailItem}>
+              <span className={s.detailIconWrapGreen}><Icon name={it.icon} size={18} strokeWidth={1.6} /></span>
+              <p>{it.description}</p>
             </div>
-            <p className={s.noteBox}>
-              {c.section05.noteText}<b>{c.section05.noteBold}</b>
-            </p>
-          </div>
+          ))}
+        </div>
+        <p className={s.noteOnGreen}>
+          {c.section05.noteText}<b>{c.section05.noteBold}</b>
+        </p>
+      </section>
 
-          <div>
-            <span className={s.numBadge}>{c.section06.number}</span>
-            <h2 className={s.h2Dark}>
-              {c.section06.title} <span className={s.limeDark}>{c.section06.titleHighlight}</span>
-            </h2>
-            <div className={s.promiseList}>
-              {c.section06.promises.map((p) => (
-                <div key={p.id} className={s.promiseItem}>
-                  <Icon name="x" size={16} className={s.promiseIcon} />
-                  {p.text}
-                </div>
-              ))}
+      {/* ── 06 ── */}
+      <section className={`${s.section} ${s.sectionDark}`}>
+        <span className={s.numBadgeLime}>{c.section06.number}</span>
+        <h2 className={s.h2Light}>
+          {c.section06.title} <span className={s.lime}>{c.section06.titleHighlight}</span>
+        </h2>
+        <div className={s.promiseList}>
+          {c.section06.promises.map((p) => (
+            <div key={p.id} className={s.promiseItem}>
+              <Icon name="x" size={16} className={s.promiseIcon} />
+              {p.text}
             </div>
-            <div className={s.offerBox}>
-              <p>{c.section06.offerIntro}</p>
-              <div className={s.offerGrid}>
-                {c.section06.offers.map((o) => (
-                  <div key={o.id} className={s.offerItem}>
-                    <span className={s.offerIconWrap}><Icon name={o.icon} size={14} strokeWidth={1.8} /></span>
-                    {o.label}
-                  </div>
-                ))}
+          ))}
+        </div>
+        <div className={s.offerBox}>
+          <p>{c.section06.offerIntro}</p>
+          <div className={s.offerGrid}>
+            {c.section06.offers.map((o) => (
+              <div key={o.id} className={s.offerItem}>
+                <span className={s.offerIconWrap}><Icon name={o.icon} size={14} strokeWidth={1.8} /></span>
+                {o.label}
               </div>
-            </div>
-            <p className={s.noteBox}>
-              {c.section06.closingText}<b>{c.section06.closingBold}</b>
-            </p>
+            ))}
           </div>
         </div>
+        <p className={s.quoteBox}>
+          {c.section06.closingText}<b>{c.section06.closingBold}</b>
+        </p>
       </section>
 
       {/* ── Collab conveyor ── */}
